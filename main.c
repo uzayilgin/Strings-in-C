@@ -99,7 +99,7 @@ void sort(struct WordCount array[], int n) {
 	}
 }
 
-// In the main part of the task2, I checked all words in the spam lines. If the word is added the array before I increase the occurance of it, else if it has not added the list before, I add the list and increase its occurance. Lastly, I print the requested output.
+// In the main part of the task2, I checked all words in the spam lines. If the word is added the array before I increase the occurance of it, else if it has not added the list before, I add the list and increase its occurance. Finally, I sorted them by calling sort method that I defined previously, and print them.
 int task2(){
 	FILE *file = fopen("preprocessed_dataset.txt", "r");
 	char line[BUFFER_SIZE];
@@ -122,18 +122,71 @@ int task2(){
 			}
 		}
 	}
-	fclose(file);
 	sort(wordArray, wordCount);
 	printf("Top 10 occuring words in spam messages: \n");
-	int j;
-	for (j=0; j < 10 && j < wordCount; ++j) {
-		printf("%s: %d times\n", wordArray[j].word, wordArray[j].count);
+	int i;
+	for (i=0; i < 10; ++i) {
+		printf("%s: %d times\n", wordArray[i].word, wordArray[i].count);
 	}
+	fclose(file);
 	return 0;
-	}
+}
 
+			
+// In the task3 part I checked all lines whether it contains at least 3 spam words. If so
+int task3(){
+	int i;
+	int spamCount = 0;
+	int nonSpamCount = 0;
+	int actualLabelSpam = 0;
+	int actualLabelHam = 0;
+	double accuracyOfSpam = 0.00;
+	double accuracyOfNonSpam = 0.00;
+	FILE *file = fopen("testData.txt", "r");
+	char line[BUFFER_SIZE];
+	while (fgets(line, sizeof(line), file)) {
+		if (strncmp(line, "spam", 4) == 0) {
+			++actualLabelSpam;
+		}		
+		else if (strncmp(line, "ham", 3) == 0) {
+			++actualLabelHam;
+		}
+		int matches = 0;
+		for(i=0; i < 10; ++i) {
+			char* currentWord = wordArray[i].word;
+			if(isLine(line, currentWord) > 0) {
+				matches++;
+			}
+		}
+		if(matches >= 3) {
+			++spamCount;
+		}
+		else {
+			++nonSpamCount;
+		}
+	}
+	fclose(file);
+	if(spamCount <= 14) {
+		accuracyOfSpam = ((double)spamCount / (double)actualLabelSpam) * 100;
+	}
+	else {
+		accuracyOfSpam = (double)100;
+	}
+	if(nonSpamCount <= 83) {
+		accuracyOfNonSpam = ((double)nonSpamCount / (double)actualLabelHam) * 100;
+	}
+	else {
+		accuracyOfNonSpam = (double)100;
+	}
+	printf("Accuracy of spam predictions: %.2f %\n", accuracyOfSpam);
+	printf("Accuracy of ham predictions: %.2f %\n", accuracyOfNonSpam);
+	printf("Total spam messages: %d\n", actualLabelSpam);
+	printf("Total ham messages: %d\n", actualLabelHam); 
+	return 0;
+}
 
 int main() {
 	task1();
 	task2();
+	task3();
 }
