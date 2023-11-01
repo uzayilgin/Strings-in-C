@@ -70,10 +70,11 @@ struct WordCount {
 // I created an array to keep a count of unique words.
 struct WordCount wordArray[BUFFER_SIZE];
 int wordCount = 0;
-int i;
+
 
 // findWord function checks that given *word is in the wordArray if so gives its index.
 int findWord(char *word) {
+	int i;
 	for (i=0; i < wordCount; ++i) {
 		if (strcmp(wordArray[i].word, word) == 0) {
 			return i;
@@ -107,7 +108,6 @@ int task2(){
 		if (strncmp(line, "spam", 4) == 0) {	
 			char *word = strtok(line + 5, " ,.-!?()\n");
 			while (word) {					
-				word[strcspn(word, "\n")] = 0;
 				stringToLower(word);
 				int index = findWord(word);
 				if (index != -1) {
@@ -190,3 +190,7 @@ int main() {
 	task2();
 	task3();
 }
+
+/* TASK 4
+ * The spam detector didn't perform as well as I expected. The accuracy percentage is only 42.86. So, it identifed more than half of the actual spam messages incorrectly. There might be some factors that leads to this low accuracy percantage. For example, detector only search for the top 10 spam words, but 10 words may not be sufficient to decide it is a spam or not. Because of that, more spam messages can be considered in order to get more accurate result. Moreover, the detector checks if the sentence includes at least 3 spam words, but it might be misleading, because some non-spam messages may also include 3 or more spam words. However, this doesn't necessarily mean that it is a spam. Therefore, only checking occurance of the words may not be sufficient. Checking the characteristics also would increase the accuracy. Lastly, more sentences can be used in order to get more accuracy. Since the detector will check more samples, the accuracy will be better.
+*/
